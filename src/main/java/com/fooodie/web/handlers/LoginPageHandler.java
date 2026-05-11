@@ -23,11 +23,7 @@ public class LoginPageHandler implements RouteHandler {
           + "style=\"background:linear-gradient(160deg,#1a1a2e,#0f3460);color:#fff\">"
           + "<div style=\"font-size:2rem;font-weight:800;color:var(--brand)\">Fooodie</div>"
           + "<p class=\"mt-3\" style=\"opacity:.8\">Your favourite food, delivered fast.</p>"
-          + "<div class=\"mt-4 p-3\" style=\"background:rgba(255,255,255,.08);border-radius:12px\">"
-          + "<div style=\"font-size:.8rem;opacity:.7\">Demo credentials</div>"
-          + "<div class=\"mt-1\"><b>admin</b> / admin123</div>"
-          + "<div><b>customer</b> / customer123</div>"
-          + "</div></div>"
+          + "</div>"
 
           // Right panel — form
           + "<div class=\"col-md-7\"><div class=\"card-body p-5\">"

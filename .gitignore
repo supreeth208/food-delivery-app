@@ -20,6 +20,7 @@ fooodie.db-wal
 
 # Logs
 server.log
+sources.txt
 
 # Dependencies
 .classpath

@@ -57,5 +57,7 @@ if %ERRORLEVEL% NEQ 0 (
 )
 
 echo Starting Fooodie on http://localhost:9090 ...
-java -cp "bin;lib\sqlite-jdbc.jar" com.fooodie.web.HttpServerApp
+java -cp "bin;lib\sqlite-jdbc.jar;lib\slf4j-api.jar;lib\slf4j-simple.jar" com.fooodie.web.HttpServerApp
 pause
+
+

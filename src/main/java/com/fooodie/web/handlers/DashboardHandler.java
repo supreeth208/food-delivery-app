@@ -61,7 +61,6 @@ public class DashboardHandler implements RouteHandler {
           + "<div class=\"section-title\">Popular Cuisines</div>"
           + "<div class=\"row g-3\">"
           + cuisine("Pizza",   "https://images.unsplash.com/photo-1574071318508-1cdbab80d002?w=400&q=80")
-          + cuisine("Sushi",   "https://images.unsplash.com/photo-1617196034183-421b4040ed20?w=400&q=80")
           + cuisine("Burgers", "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400&q=80")
           + cuisine("Indian",  "https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?w=400&q=80")
           + cuisine("Mexican", "https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400&q=80")

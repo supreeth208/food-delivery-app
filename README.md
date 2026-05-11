@@ -1,207 +1,245 @@
 # Fooodie - Online Food Delivery Application
 
-A basic online food delivery application built with plain Java. This application demonstrates core object-oriented programming concepts with model classes for managing users, restaurants, menus, orders, and deliveries.
+A full-stack online food delivery web application built entirely in **plain Java** — no Spring, no Tomcat, no external frameworks. Uses the built-in JDK HTTP server, SQLite for persistence, and Bootstrap 5 for a modern responsive UI.
+
+---
 
 ## Features
 
-- **User Management**: Classes for managing users (customers, restaurant owners, delivery partners, admins)
-- **Restaurant Management**: Restaurant management with owner associations
-- **Menu Management**: Menu item management with pricing and availability
-- **Order Processing**: Order creation and tracking system
-- **Delivery Tracking**: Delivery management with status updates
-- **Object-Oriented Design**: Clean architecture with model, service, and controller layers
+- **Login / Register / Logout** — Session-based auth with SHA-256 password hashing
+- **Restaurant Browsing** — 6 restaurants with cover photos, ratings, ETA, and delivery fees
+- **Menu Browsing** — 24 menu items with food images, categories, and prices
+- **Cart Management** — Add/remove items, view subtotals and delivery fee
+- **Order Placement** — Checkout and persist orders to SQLite database
+- **Order History** — View all past orders with item details and totals
+- **Profile Page** — Account info and order statistics
+- **Access Control** — All features locked behind login, navbar links hidden until logged in
+
+---
+
+## Prerequisites
+
+You only need **Java JDK 17 or higher** installed. Nothing else.
+
+Check your Java version:
+```bash
+java -version
+```
+
+If Java is not installed, download it from:
+👉 https://www.oracle.com/java/technologies/downloads/
+
+---
+
+## How to Run
+
+### Step 1 — Clone the repository
+
+```bash
+git clone https://github.com/supreeth208/food-delivery-app.git
+cd food-delivery-app
+```
+
+---
+
+### Step 2 — Compile
+
+**Windows (Command Prompt):**
+```cmd
+run.bat
+```
+
+**Windows (VS Code PowerShell Terminal):**
+```powershell
+Get-ChildItem -Recurse -Filter "*.java" src\main\java | % { $_.FullName } | Out-File -Encoding ASCII sources.txt
+javac -encoding UTF-8 -d bin -cp "lib\sqlite-jdbc.jar" "@sources.txt"
+```
+
+**Linux / Mac (Terminal):**
+```bash
+find src/main/java -name "*.java" > sources.txt
+javac -encoding UTF-8 -d bin -cp "lib/sqlite-jdbc.jar" @sources.txt
+```
+
+---
+
+### Step 3 — Run
+
+**Windows (VS Code PowerShell / Command Prompt):**
+```powershell
+java -cp "bin;lib\sqlite-jdbc.jar" com.fooodie.web.HttpServerApp
+```
+
+**Linux / Mac:**
+```bash
+java -cp "bin:lib/sqlite-jdbc.jar" com.fooodie.web.HttpServerApp
+```
+
+---
+
+### Step 4 — Open in browser
+
+```
+http://localhost:9090
+```
+
+You will be redirected to the login page automatically.
+
+> The SQLite database `fooodie.db` is **created automatically** on first run — no setup needed.
+
+---
+
+## Quick Start (Windows — one command)
+
+Open Command Prompt in the project folder and run:
+```cmd
+run.bat
+```
+This compiles and starts the server in one step.
+
+---
+
+## Demo Credentials
+
+| Username   | Password      | Role     |
+|------------|---------------|----------|
+| customer   | customer123   | CUSTOMER |
+| admin      | admin123      | ADMIN    |
+
+Or click **Sign Up** on the login page to create a new account.
+
+---
+
+## Available Pages
+
+| URL            | Description                     | Auth Required |
+|----------------|---------------------------------|---------------|
+| `/`            | Redirects to login or home      | No            |
+| `/login`       | Login page                      | No            |
+| `/register`    | Register new account            | No            |
+| `/home`        | Dashboard with cuisines & stats | Yes           |
+| `/restaurants` | Browse all restaurants & menus  | Yes           |
+| `/cart`        | View cart and place order       | Yes           |
+| `/orders`      | Order history                   | Yes           |
+| `/profile`     | Account info and stats          | Yes           |
+
+---
 
 ## Project Structure
 
 ```
 fooodie/
 ├── src/main/java/com/fooodie/
-│   ├── controller/          # API endpoint classes
-│   ├── model/              # Entity/Model classes
-│   ├── service/            # Business logic layer
-│   ├── repository/         # Data access interfaces
-│   └── FooodieApplication.java  # Main application class
-├── src/main/resources/
-│   └── application.properties   # Configuration file
-└── README.md              # This file
+│   ├── db/                        # Database layer
+│   │   ├── Database.java          # SQLite connection + schema init
+│   │   ├── AuthDao.java           # User login/register queries
+│   │   ├── RestaurantDao.java     # Restaurant + menu queries + seeding
+│   │   ├── OrderDao.java          # Order persistence and retrieval
+│   │   └── mapper/UserRow.java
+│   ├── model/                     # Entity classes
+│   │   ├── User.java
+│   │   ├── Restaurant.java
+│   │   ├── MenuItem.java
+│   │   ├── Order.java
+│   │   ├── OrderItem.java
+│   │   └── Delivery.java
+│   ├── services/                  # In-memory stores
+│   │   ├── CartStore.java         # Session-based cart
+│   │   └── OrderStore.java
+│   └── web/
+│       ├── HttpServerApp.java     # Server entry point + route wiring
+│       ├── handlers/              # One class per route
+│       ├── middleware/            # Router, RouteHandler, AuthMiddleware
+│       ├── req/                   # RequestContext (params, cookies)
+│       ├── resp/                  # Response builder
+│       ├── session/               # SessionManager, UserSession
+│       └── template/              # HtmlPage layout
+├── lib/
+│   └── sqlite-jdbc.jar            # Only external dependency (included)
+├── bin/                           # Compiled .class files (auto-generated)
+├── fooodie.db                     # SQLite database (auto-created on first run)
+├── run.bat                        # Windows compile + run script
+└── PROJECT_REPORT.md              # Full project report
 ```
+
+---
 
 ## Technologies Used
 
-- **Java 11+**: Programming language
-- **Object-Oriented Programming**: Core design patterns
-- **Data Structures**: Collections for managing data
-- **File I/O**: For potential data persistence
+| Layer       | Technology                          |
+|-------------|-------------------------------------|
+| Language    | Java 17                             |
+| HTTP Server | `com.sun.net.httpserver` (built-in) |
+| Database    | SQLite via `sqlite-jdbc`            |
+| Frontend    | Bootstrap 5.3, Google Fonts (Inter) |
+| Auth        | SHA-256 + UUID session cookies      |
+| Build       | `javac` (no Maven/Gradle)           |
 
-## Prerequisites
+---
 
-- Java Development Kit (JDK) 11 or higher
-- Git (optional)
+## Database
 
-## Installation and Setup
+The SQLite database `fooodie.db` is **automatically created** on first run with:
+- 6 seeded restaurants
+- 24 menu items
+- 2 demo user accounts
 
-1. **Download the project**
-   ```bash
-   cd fooodie
-   ```
+Tables: `users`, `restaurants`, `menu_items`, `orders`, `order_items`
 
-2. **Compile the Java source files**
-   ```bash
-   javac -d bin src/main/java/com/fooodie/**/*.java
-   ```
+---
 
-3. **Run the application**
-   ```bash
-   java -cp bin com.fooodie.FooodieApplication
-   ```
+## Restaurants
 
-## API Endpoints
+| # | Name             | Cuisine  | Items | Rating |
+|---|------------------|----------|-------|--------|
+| 1 | Pizza Palace     | Italian  | 4     | 4.6    |
+| 2 | Sushi World      | Japanese | 4     | 4.8    |
+| 3 | Burger Barn      | American | 4     | 4.5    |
+| 4 | Spice Garden     | Indian   | 4     | 4.7    |
+| 5 | Taco Fiesta      | Mexican  | 4     | 4.4    |
+| 6 | The Pasta House  | Italian  | 4     | 4.6    |
 
-This plain Java implementation focuses on core business logic classes. The classes can be used as follows:
+---
 
-### User Class
-```java
-User user = new User(
-    "john_doe",
-    "john@example.com",
-    "password123",
-    "John Doe",
-    "555-0123",
-    "123 Main St",
-    User.UserRole.CUSTOMER
-);
+## Troubleshooting
+
+**Port already in use:**
+```powershell
+# Windows — find and kill the process using port 9090
+netstat -ano | findstr :9090
+taskkill /PID <PID> /F
 ```
 
-### Restaurant Class
-```java
-Restaurant restaurant = new Restaurant(
-    "Pizza Palace",
-    "Best pizza in town",
-    "456 Oak Ave",
-    "555-9876",
-    2.99,
-    30
-);
-restaurant.setOwner(owner);
+**`NoClassDefFoundError` on startup:**
+Make sure you include the SQLite jar in the classpath:
+```powershell
+java -cp "bin;lib\sqlite-jdbc.jar" com.fooodie.web.HttpServerApp   # Windows
+java -cp "bin:lib/sqlite-jdbc.jar" com.fooodie.web.HttpServerApp   # Linux/Mac
 ```
 
-### Menu Item Class
-```java
-MenuItem item = new MenuItem(
-    "Margherita Pizza",
-    "Classic pizza with tomato and mozzarella",
-    12.99,
-    "Pizza",
-    15
-);
-item.setRestaurant(restaurant);
+**Login page hangs / not redirecting:**
+The server was started without the SQLite jar. Stop and restart using the exact command above.
+
+**Recompile after making changes:**
+```powershell
+Get-ChildItem -Recurse -Filter "*.java" src\main\java | % { $_.FullName } | Out-File -Encoding ASCII sources.txt
+javac -encoding UTF-8 -d bin -cp "lib\sqlite-jdbc.jar" "@sources.txt"
+java -cp "bin;lib\sqlite-jdbc.jar" com.fooodie.web.HttpServerApp
 ```
 
-### Order Class
-```java
-Order order = new Order(
-    customer,
-    restaurant,
-    orderItems,
-    deliveryAddress
-);
-order.calculateTotal();
-```
-
-## Core Classes
-
-- **User**: Represents users with different roles (CUSTOMER, RESTAURANT_OWNER, DELIVERY_PARTNER, ADMIN)
-- **Restaurant**: Manages restaurant information and associated menu items
-- **MenuItem**: Represents food items available in restaurants
-- **Order**: Tracks customer orders with multiple items
-- **OrderItem**: Individual items in an order with quantity and price
-- **Delivery**: Manages delivery tracking and status
-
-## Service Layer
-
-Service classes provide business logic:
-- `UserService`: User management operations
-- `RestaurantService`: Restaurant management
-- `MenuService`: Menu item operations
-- `OrderService`: Order processing
-- `DeliveryService`: Delivery tracking
-
-## Example Usage
-
-```java
-// Create users
-User owner = new User(...);
-User customer = new User(...);
-
-// Create restaurant
-Restaurant restaurant = new Restaurant(...);
-restaurant.setOwner(owner);
-
-// Add menu items
-MenuItem pizza = new MenuItem("Pizza", "desc", 12.99, "Pizza", 15);
-pizza.setRestaurant(restaurant);
-
-// Create order
-Order order = new Order(customer, restaurant, items, "delivery address");
-order.setStatus(Order.OrderStatus.PENDING);
-```
+---
 
 ## Future Enhancements
 
-- Add file-based or database persistence (JDBC/SQLite)
-- Implement a simple console or GUI interface (Swing/JavaFX)
-- Add input validation and error handling
-- Implement data serialization (JSON)
-- Add logging functionality
-- Create unit tests with JUnit
-- Build a REST API wrapper (if needed)
+- Real-time order tracking
+- Search and filter restaurants
+- Payment integration
+- Admin panel for CRUD operations
+- Email order confirmations
+- Docker deployment
 
-## Building and Running Manually
-
-### On Windows:
-```bash
-# Create bin directory
-mkdir bin
-
-# Compile all Java files
-javac -d bin src/main/java/com/fooodie/**/*.java
-
-# Run the application
-java -cp bin com.fooodie.FooodieApplication
-```
-
-### On Linux/Mac:
-```bash
-# Create bin directory
-mkdir -p bin
-
-# Compile all Java files
-find src/main/java -name "*.java" -type f | xargs javac -d bin
-
-# Run the application
-java -cp bin com.fooodie.FooodieApplication
-```
-
-## Notes
-
-- This is a **plain Java implementation** focused on object-oriented design principles
-- No external dependencies or frameworks required
-- All classes use standard Java features
-- Model classes can be easily integrated with databases or APIs later
-- Service layer provides clean separation of concerns
-
-## Contributing
-
-Feel free to fork this project and submit improvements.
+---
 
 ## License
 
 This project is open source and available under the MIT License.
-
-## Support
-
-For issues or questions, please create an issue in the project repository.
-
----
-
-**Note**: This is a basic educational implementation demonstrating OOP concepts and application architecture in plain Java.

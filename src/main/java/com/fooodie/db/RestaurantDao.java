@@ -19,7 +19,7 @@ public class RestaurantDao {
              ResultSet rs = st.executeQuery(sql)) {
             while (rs.next()) {
                 Restaurant r = mapRestaurant(rs);
-                r.setMenuItems(menuItemsFor(c, r.getId()));
+                r.setMenuItems(menuItemsFor(c, r));
                 list.add(r);
             }
         } catch (SQLException e) { throw new RuntimeException(e); }
@@ -34,7 +34,7 @@ public class RestaurantDao {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     Restaurant r = mapRestaurant(rs);
-                    r.setMenuItems(menuItemsFor(c, r.getId()));
+                    r.setMenuItems(menuItemsFor(c, r));
                     return r;
                 }
             }
@@ -60,13 +60,17 @@ public class RestaurantDao {
 
     // ── private helpers ──────────────────────────────────────────────────────
 
-    private List<MenuItem> menuItemsFor(Connection c, long restaurantId) throws SQLException {
+    private List<MenuItem> menuItemsFor(Connection c, Restaurant restaurant) throws SQLException {
         List<MenuItem> items = new ArrayList<>();
-        String sql = "SELECT id,name,description,price,category,image_url,prep_time,available,restaurant_id FROM menu_items WHERE restaurant_id=? AND available=1 ORDER BY id";
+        String sql = "SELECT id,name,description,price,category,image_url,prep_time,available FROM menu_items WHERE restaurant_id=? AND available=1 ORDER BY id";
         try (PreparedStatement ps = c.prepareStatement(sql)) {
-            ps.setLong(1, restaurantId);
+            ps.setLong(1, restaurant.getId());
             try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) items.add(mapMenuItem(rs));
+                while (rs.next()) {
+                    MenuItem m = mapMenuItem(rs);
+                    m.setRestaurant(restaurant);  // always set restaurant back
+                    items.add(m);
+                }
             }
         }
         return items;

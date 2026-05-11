@@ -7,21 +7,23 @@ import java.sql.Statement;
 
 public class Database {
 
-    private static final String DB_URL = "jdbc:sqlite:fooodie.db";
+    private static final String DB_URL;
 
     static {
         try {
+            String dir = System.getProperty("user.dir");
+            DB_URL = "jdbc:sqlite:" + dir + "/fooodie.db";
             Class.forName("org.sqlite.JDBC");
             initSchema();
+            System.out.println("[DB] SQLite ready: " + dir + "/fooodie.db");
         } catch (Exception e) {
-            throw new RuntimeException("Failed to initialise SQLite", e);
+            throw new ExceptionInInitializerError(e);
         }
     }
 
     public static Connection getConnection() throws SQLException {
         Connection c = DriverManager.getConnection(DB_URL);
         try (Statement st = c.createStatement()) {
-            st.execute("PRAGMA journal_mode=WAL");
             st.execute("PRAGMA foreign_keys=ON");
         }
         return c;

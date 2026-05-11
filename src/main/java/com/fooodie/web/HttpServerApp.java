@@ -1,18 +1,20 @@
 package com.fooodie.web;
 
+import com.fooodie.db.Database;
+import com.fooodie.db.RestaurantDao;
 import com.fooodie.web.handlers.*;
 import com.fooodie.web.middleware.AuthMiddleware;
 import com.fooodie.web.middleware.RouteHandler;
 import com.fooodie.web.middleware.Router;
 
-/**
- * Minimal HTTP server (no Spring) to serve HTML pages and handle form submissions.
- *
- * Endpoints are wired in {@link #main(String[])}.
- */
 public class HttpServerApp {
 
     public static void main(String[] args) throws Exception {
+        // Force DB init + seeding at startup — not lazily on first request
+        System.out.println("[DB] Initialising database...");
+        new RestaurantDao().findAll();
+        System.out.println("[DB] Database ready.");
+
         int port = 9090;
         Router router = new Router(port);
 

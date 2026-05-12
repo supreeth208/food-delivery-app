@@ -44,15 +44,15 @@ cd food-delivery-app
 
 ### Step 2 — Compile
 
-**Windows (Command Prompt):**
-```cmd
-run.bat
-```
-
 **Windows (VS Code PowerShell Terminal):**
 ```powershell
 Get-ChildItem -Recurse -Filter "*.java" src\main\java | % { $_.FullName } | Out-File -Encoding ASCII sources.txt
 javac -encoding UTF-8 -d bin -cp "lib\sqlite-jdbc.jar" "@sources.txt"
+```
+
+**Windows (Command Prompt):**
+```cmd
+run.bat
 ```
 
 **Linux / Mac (Terminal):**
